@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import VehicleCard from '../components/VehicleCard';
 
 const VehicleListing = () => {
   const [filter, setFilter] = useState({ brand: '', minPrice: '', maxPrice: '' });
+  
+  // 1. We create a "state" bucket to hold the real data from the database
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for demonstration
-  const vehicles = [
-    { id: '1', brand: 'Toyota', model: 'Aqua', year: 2018, pricePerDay: 8500, location: 'Colombo', image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=300' },
-    { id: '2', brand: 'Honda', model: 'Vezel', year: 2017, pricePerDay: 12000, location: 'Kandy', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=300' },
-    { id: '3', brand: 'Suzuki', model: 'Wagon R', year: 2019, pricePerDay: 6500, location: 'Galle', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=300' }
-  ];
+  // 2. We use useEffect to automatically fetch the data the moment the page opens
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/vehicles');
+        setVehicles(res.data); // Dump the database cars into our bucket
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching vehicles:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []); // The empty array [] means "only run this exactly once right as the page starts"
 
   return (
     <div className="container listing-page">
@@ -26,9 +40,13 @@ const VehicleListing = () => {
       </aside>
 
       <div className="results">
-        <div className="vehicle-grid">
-          {vehicles.map(v => <VehicleCard key={v.id} vehicle={v} />)}
-        </div>
+        {loading ? (
+           <p style={{ color: 'white' }}>Loading amazing vehicles...</p>
+        ) : (
+          <div className="vehicle-grid">
+            {vehicles.map(v => <VehicleCard key={v._id} vehicle={v} />)}
+          </div>
+        )}
       </div>
 
       <style>{`

@@ -2,15 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const VehicleCard = ({ vehicle }) => {
+  // Use the first image in the array, or a cool default car silhouette if none exists
+  const coverImage = vehicle.images && vehicle.images.length > 0 
+    ? vehicle.images[0] 
+    : 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=300';
+
   return (
     <div className="vehicle-card glass-card">
-      <div className="card-image" style={{ backgroundImage: `url(${vehicle.image})` }}>
+      <div className="card-image" style={{ backgroundImage: `url(${coverImage})` }}>
         <div className="price-tag">LKR {vehicle.pricePerDay}/day</div>
       </div>
       <div className="card-body">
         <h3>{vehicle.brand} {vehicle.model}</h3>
         <p className="year">{vehicle.year} • {vehicle.location}</p>
-        <Link to={`/vehicle/${vehicle.id}`} className="btn-secondary">View Details</Link>
+        <Link to={`/vehicle/${vehicle._id}`} className="btn-secondary">View Details</Link>
       </div>
       <style>{`
         .vehicle-card {
