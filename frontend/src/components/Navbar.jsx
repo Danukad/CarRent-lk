@@ -36,9 +36,9 @@ const Navbar = () => {
           height: 72px;
           display: flex;
           align-items: center;
-          border-bottom: 1px solid var(--border);
-          background: rgba(15, 23, 42, 0.7);
-          backdrop-filter: blur(20px);
+          background: rgba(26, 5, 51, 0.75);
+          backdrop-filter: blur(24px);
+          border-bottom: 1px solid rgba(139, 92, 246, 0.25);
           position: sticky;
           top: 0;
           z-index: 1000;
