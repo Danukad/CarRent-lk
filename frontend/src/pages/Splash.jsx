@@ -15,7 +15,7 @@ const Splash = () => {
           playsInline
           className="background-video"
         >
-          <source src="/path-to-your-video.mp4" type="video/mp4" />
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-on-a-highway-at-sunset-34538-large.mp4" type="video/mp4" />
         </video>
         <div className="video-overlay"></div>
       </div>
