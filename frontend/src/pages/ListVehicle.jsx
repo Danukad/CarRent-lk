@@ -4,7 +4,7 @@ import axios from 'axios';
 const ListVehicle = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    brand: '', model: '', year: '', pricePerDay: '', location: '', description: '', availableFrom: '', availableTo: '', image: ''
+    brand: '', model: '', year: '', pricePerDay: '', location: '', description: '', availableFrom: '', availableTo: '', images: ['', '', '', '', '']
   });
 
   const nextStep = (e) => { e.preventDefault(); setStep(step + 1); };
@@ -18,7 +18,7 @@ const ListVehicle = () => {
   };
 
   // Function to upload the photo to our new backend route
-  const handlePhotoUpload = async (e) => {
+  const handlePhotoUpload = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -34,9 +34,11 @@ const ListVehicle = () => {
         }
       });
       
-      // Save the returned URL (http://localhost:5000/uploads/...) to our form data
-      setFormData({ ...formData, image: res.data.url });
-      alert("Image uploaded successfully!");
+      // Save the returned URL to the specific index in the images array
+      const newImages = [...formData.images];
+      newImages[index] = res.data.url;
+      setFormData({ ...formData, images: newImages });
+      alert(`Image ${index + 1} uploaded successfully!`);
       
     } catch (err) {
       console.error("Error uploading image:", err);
@@ -68,7 +70,7 @@ const ListVehicle = () => {
 
       const payload = {
         ...formData,
-        images: formData.image ? [formData.image] : [] // Backend expects an array of images
+        // Backend expects an array of images, which we already have in formData.images
       };
 
       console.log("Ready to send this to the backend:", payload);
@@ -77,7 +79,7 @@ const ListVehicle = () => {
       
       // Optionally reset the form and go to Step 1
       setFormData({
-        brand: '', model: '', year: '', pricePerDay: '', location: '', description: '', availableFrom: '', availableTo: '', image: ''
+        brand: '', model: '', year: '', pricePerDay: '', location: '', description: '', availableFrom: '', availableTo: '', images: ['', '', '', '', '']
       });
       setStep(1);
 
@@ -135,27 +137,68 @@ const ListVehicle = () => {
           {/* STEP 2: Photos */}
           {step === 2 && (
             <div className="wizard-step fade-in">
-              <h2>Step 2: Add Awesome Photos</h2>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>A good photo increases your rent chances massively.</p>
+              <h2>Step 2: Add 5 Awesome Photos</h2>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Important:</span> Exactly 5 photos are mandatory to list your vehicle.
+              </p>
               
-              <div className="input-field">
-                <label>Upload Vehicle Photo (from your computer)</label>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handlePhotoUpload} 
-                />
+              <div className="upload-grid">
+                {[0, 1, 2, 3, 4].map((index) => (
+                  <div key={index} className="upload-box-wrapper">
+                    <label className="image-slot-label">Photo {index + 1}</label>
+                    <div className={`upload-box ${formData.images[index] ? 'has-image' : ''}`}>
+                      {formData.images[index] ? (
+                        <div className="preview-container">
+                          <img src={formData.images[index]} alt={`Slot ${index + 1}`} />
+                          <button 
+                            type="button" 
+                            className="remove-image" 
+                            onClick={() => {
+                              const newImages = [...formData.images];
+                              newImages[index] = '';
+                              setFormData({ ...formData, images: newImages });
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="upload-placeholder">
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={(e) => handlePhotoUpload(e, index)} 
+                            id={`file-input-${index}`}
+                            className="hidden-input"
+                          />
+                          <label htmlFor={`file-input-${index}`} className="upload-trigger">
+                            <span className="plus">+</span>
+                            <span>Upload</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              
-              {formData.image && (
-                <div style={{ marginTop: '1rem', borderRadius: '0.5rem', overflow: 'hidden', height: '200px' }}>
-                  <img src={formData.image} alt="Car Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              )}
               
               <div className="wizard-buttons">
                 <button className="btn-secondary" onClick={prevStep}>Back</button>
-                <button className="btn-primary" onClick={nextStep}>Next: Location & Map</button>
+                <button 
+                  className="btn-primary" 
+                  onClick={(e) => {
+                    const filledImages = formData.images.filter(img => img.length > 0);
+                    if (filledImages.length < 5) {
+                      e.preventDefault();
+                      alert("Please upload all 5 mandatory images before proceeding.");
+                    } else {
+                      nextStep(e);
+                    }
+                  }}
+                  style={{ opacity: formData.images.filter(img => img.length > 0).length === 5 ? 1 : 0.6 }}
+                >
+                  Next: Location & Map
+                </button>
               </div>
             </div>
           )}
@@ -178,7 +221,20 @@ const ListVehicle = () => {
 
               <div className="wizard-buttons">
                 <button className="btn-secondary" onClick={prevStep}>Back</button>
-                <button className="btn-primary" onClick={handleSubmit}>Publish Listing 🎉</button>
+                <button 
+                  className="btn-primary" 
+                  onClick={(e) => {
+                    const filledImages = formData.images.filter(img => img.length > 0);
+                    if (filledImages.length < 5) {
+                      e.preventDefault();
+                      alert("Error: 5 images are mandatory. Please go back to Step 2.");
+                      return;
+                    }
+                    handleSubmit(e);
+                  }}
+                >
+                  Publish Listing 🎉
+                </button>
               </div>
             </div>
           )}
@@ -186,6 +242,89 @@ const ListVehicle = () => {
       </div>
 
       <style>{`
+        .upload-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+        .upload-box-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        .image-slot-label {
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: var(--text-muted);
+          text-align: center;
+        }
+        .upload-box {
+          aspect-ratio: 1;
+          background: rgba(255, 255, 255, 0.03);
+          border: 2px dashed var(--border);
+          border-radius: 1rem;
+          position: relative;
+          transition: all 0.3s;
+          overflow: hidden;
+        }
+        .upload-box:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: var(--primary);
+        }
+        .upload-box.has-image {
+          border-style: solid;
+          border-color: var(--primary);
+        }
+        .hidden-input {
+          display: none;
+        }
+        .upload-trigger {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: var(--text-muted);
+          gap: 0.5rem;
+        }
+        .upload-trigger .plus {
+          font-size: 2rem;
+          line-height: 1;
+        }
+        .preview-container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        .preview-container img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .remove-image {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 1.2rem;
+          transition: all 0.2s;
+        }
+        .remove-image:hover {
+          background: #ef4444;
+          transform: scale(1.1);
+        }
         .list-page {
           padding: 60px 1rem 100px;
           display: flex;

@@ -43,6 +43,12 @@ router.get('/', async (req, res) => {
 router.post('/', auth, async (req, res) => {
     try {
         const { brand, model, year, pricePerDay, description, location, images, availableFrom, availableTo } = req.body;
+        
+        // Validation for 5 mandatory images
+        if (!images || !Array.isArray(images) || images.length !== 5) {
+            return res.status(400).json({ msg: 'Exactly 5 images are mandatory.' });
+        }
+
         const newVehicle = new Vehicle({
             owner: req.user.id,
             brand, model, year, pricePerDay, description, location, images, availableFrom, availableTo
