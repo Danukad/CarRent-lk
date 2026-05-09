@@ -2,11 +2,18 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
-  Car, Calendar, Star, Banknote, Bell, Plus, TrendingUp, Grid, Settings as SettingsIcon, PenLine, Sparkles, ChevronRight
+  Car, Calendar, Star, Banknote, Bell, Plus, TrendingUp, Grid, Settings as SettingsIcon, PenLine, Sparkles, ChevronRight, LogOut
 } from 'lucide-react';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  };
+
   const user = JSON.parse(localStorage.getItem('user') || 'null') || {
     name: 'Saman Kumara',
     email: 'saman@carrents.lk',
@@ -54,6 +61,10 @@ const Profile = () => {
           
           <button className="edit-btn">
             <PenLine size={16} /> Edit Profile
+          </button>
+          
+          <button className="logout-btn" onClick={handleLogout}>
+            <LogOut size={16} /> Logout
           </button>
         </div>
 
@@ -300,6 +311,30 @@ const Profile = () => {
           background: #9333ea; 
           transform: translateY(-1px);
           box-shadow: 0 6px 16px rgba(168, 85, 247, 0.3);
+        }
+
+        .logout-btn {
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          color: #ef4444;
+          border-radius: 100px;
+          padding: 0.75rem 1.5rem;
+          font-size: 0.95rem;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: inherit;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+          background: #ef4444;
+          color: white;
+          border-color: #ef4444;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(239, 68, 68, 0.2);
         }
 
         .stats-row {

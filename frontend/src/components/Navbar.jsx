@@ -8,12 +8,6 @@ const Navbar = () => {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
-  };
-
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -37,16 +31,13 @@ const Navbar = () => {
           <Link to="/vehicles" className="nav-item">Rent</Link>
           <Link to="/list-my-car" className="nav-item">List Vehicle</Link>
           <a href="#how-it-works" className="nav-item">How it works</a>
-          <a href="#why-us" className="nav-item">Why us</a>
+          <Link to="/why-us" className="nav-item">Why us</Link>
         </div>
 
         {/* Auth Buttons */}
         <div className="nav-auth">
           {token ? (
-            <>
-              <Link to="/profile" className="nav-item">Profile</Link>
-              <button onClick={handleLogout} className="btn-logout">Logout</button>
-            </>
+            <Link to="/profile" className="nav-item btn-primary" style={{ padding: '0.65rem 1.5rem', background: 'transparent', border: '2px solid #8b5cf6', color: '#8b5cf6' }}>Profile</Link>
           ) : (
             <>
               <Link to="/login" className="nav-item sign-in">Sign in</Link>
