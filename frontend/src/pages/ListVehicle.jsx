@@ -13,7 +13,7 @@ const ListVehicle = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     brand: '', model: '', year: '', pricePerDay: '', fuelType: '', transmission: '', location: '', description: '',
-    availableFrom: new Date().toISOString(), availableTo: new Date(Date.now() + 31536000000).toISOString(), images: ['', '', '', '', ''],
+    availableFrom: new Date().toISOString().split('T')[0], availableTo: new Date(Date.now() + 31536000000).toISOString().split('T')[0], images: ['', '', '', '', ''],
     lat: 6.9271, lng: 79.8612
   });
 
@@ -130,6 +130,14 @@ const ListVehicle = () => {
                         <option value="Auto">Auto</option>
                         <option value="Manual">Manual</option>
                       </select>
+                    </div>
+                    <div className="input-field">
+                      <label>AVAILABLE FROM</label>
+                      <input type="date" name="availableFrom" value={formData.availableFrom} onChange={handleChange} required />
+                    </div>
+                    <div className="input-field">
+                      <label>AVAILABLE TO</label>
+                      <input type="date" name="availableTo" value={formData.availableTo} onChange={handleChange} required />
                     </div>
                   </div>
                   <div className="input-field full-width" style={{ marginTop: '1.5rem' }}>
@@ -280,6 +288,7 @@ const ListVehicle = () => {
           font-size: 15px;
           transition: 0.3s;
           color: white; /* Added white to ensure readability on your dark blue background */
+          color-scheme: dark; /* Ensures date picker icons and dropdowns are light-themed to match the dark CSS */
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: #7C3AED; background: white; color: #111827; box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1); }
 
