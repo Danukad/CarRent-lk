@@ -13,7 +13,7 @@ const ListVehicle = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     brand: '', model: '', year: '', pricePerDay: '', fuelType: '', transmission: '', location: '', description: '',
-    availableFrom: '', availableTo: '', images: ['', '', '', '', ''],
+    availableFrom: new Date().toISOString(), availableTo: new Date(Date.now() + 31536000000).toISOString(), images: ['', '', '', '', ''],
     lat: 6.9271, lng: 79.8612
   });
 
@@ -73,7 +73,7 @@ const ListVehicle = () => {
         <div className="list-header">
           <div className="hero-badge">
             <span className="sparkle">✦</span>
-            <span>Sri Lanka's modern car marketplace</span>
+            <span>Sri Lankaaaa's modern car marketplace</span>
           </div>
           <h1 className="list-title">Turn your car into <span className="text-purple">earnings.</span></h1>
           <p className="list-subtitle">Complete the 3 steps below to get your vehicle verified and live.</p>
@@ -264,7 +264,7 @@ const ListVehicle = () => {
           padding: 40px;
           border-radius: 24px;
           box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-          border: 1px solid #F1F5F9;
+          border: 1px solid #e9c7e6ff;
         }
 
         /* Form Elements */
@@ -275,8 +275,8 @@ const ListVehicle = () => {
           width: 100%;
           padding: 14px 20px;
           border-radius: 12px;
-          border: 1px solid #E5E7EB;
-          background: #164069ff;
+          border: 1px solid #0043caff;
+          background: #6302acff;
           font-size: 15px;
           transition: 0.3s;
           color: white; /* Added white to ensure readability on your dark blue background */

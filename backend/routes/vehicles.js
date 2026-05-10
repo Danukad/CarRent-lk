@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
 // @desc    List a new vehicle (Owner only)
 router.post('/', auth, async (req, res) => {
     try {
-        const { brand, model, year, pricePerDay, description, location, images, availableFrom, availableTo } = req.body;
+        const { brand, model, year, pricePerDay, fuelType, transmission, description, location, images, availableFrom, availableTo } = req.body;
         
         // Validation for 5 mandatory images
         if (!images || !Array.isArray(images) || images.length !== 5) {
@@ -51,7 +51,7 @@ router.post('/', auth, async (req, res) => {
 
         const newVehicle = new Vehicle({
             owner: req.user.id,
-            brand, model, year, pricePerDay, description, location, images, availableFrom, availableTo
+            brand, model, year, pricePerDay, fuelType, transmission, description, location, images, availableFrom, availableTo
         });
         const vehicle = await newVehicle.save();
         res.json(vehicle);

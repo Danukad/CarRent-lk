@@ -6,6 +6,8 @@ const VehicleSchema = new mongoose.Schema({
     model: { type: String, required: true },
     year: { type: Number, required: true },
     pricePerDay: { type: Number, required: true },
+    fuelType: { type: String },
+    transmission: { type: String },
     description: { type: String },
     location: { type: String, required: true },
     images: [{ type: String }], // URLs to images
