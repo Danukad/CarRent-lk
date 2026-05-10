@@ -200,7 +200,7 @@ const ListVehicle = () => {
         /* Header styling */
         .list-header { text-align: center; margin-bottom: 50px; }
         .hero-badge {
-          background: #F3E8FF;
+          background: #c4c0c8ff;
           color: #7C3AED;
           padding: 6px 16px;
           border-radius: 100px;
