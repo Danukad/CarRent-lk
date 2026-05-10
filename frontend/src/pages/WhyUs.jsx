@@ -127,15 +127,15 @@ const WhyUs = () => {
           gap: 1.25rem;
           background: #ffffff;
           border-radius: 1.5rem;
-          border: 1px solid rgba(0,0,0,0.06);
+          border: 2px solid rgba(0,0,0,0.1);
           box-shadow: 0 4px 20px rgba(0,0,0,0.02);
           transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         
         .feature-card:hover {
           transform: translateY(-5px);
-          border-color: rgba(0,0,0,0.12);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+          border-color: #a855f7;
+          box-shadow: 0 10px 30px rgba(168,85,247,0.15);
         }
 
         .feature-icon-wrapper {
