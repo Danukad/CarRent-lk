@@ -4,16 +4,9 @@ import { Sparkles, MapPin, Users, Fuel, Settings2, Star, Car as CarIcon } from '
 
 const VehicleCard = ({ vehicle, index }) => {
   // Gradients matching the beautiful colors in screenshot 2
-  const gradients = [
-    'linear-gradient(135deg, #c4b5fd 0%, #a855f7 100%)', // Purple
-    'linear-gradient(135deg, #fca5a5 0%, #f87171 100%)', // Coral
-    'linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 100%)', // Blue
-    'linear-gradient(135deg, #86efac 0%, #22c55e 100%)', // Green
-    'linear-gradient(135deg, #fde047 0%, #f59e0b 100%)', // Yellow/Orange
-    'linear-gradient(135deg, #99f6e4 0%, #14b8a6 100%)', // Teal
-  ];
-
-  const bg = gradients[(index || 0) % gradients.length];
+  const coverImage = vehicle.images && vehicle.images.length > 0 && vehicle.images[0]
+    ? vehicle.images[0]
+    : 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=600';
   
   // Decide pill tag appropriately
   let tag = 'Nearest';
@@ -26,13 +19,14 @@ const VehicleCard = ({ vehicle, index }) => {
 
   return (
     <div className="v-card-modern">
-      <div className="v-card-header-gradient" style={{ background: bg }}>
+      <div className="v-card-header-gradient" style={{ 
+        backgroundImage: `url(${coverImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
         <div className="v-card-tags">
           <span className="v-tag-left"><Sparkles size={12}/> {tag}</span>
           <span className="v-tag-right"><MapPin size={12}/> {distance} km</span>
-        </div>
-        <div className="v-watermark-icon">
-          <CarIcon size={120} strokeWidth={1.5} color="rgba(255,255,255,0.4)" />
         </div>
       </div>
       
