@@ -4,7 +4,7 @@ import VehicleCard from '../components/VehicleCard';
 import { MapPin, Car, Sliders, Sparkles, Navigation, Search, Star } from 'lucide-react';
 
 const VehicleListing = () => {
-  const [filter, setFilter] = useState({ location: '', brand: '', maxPrice: '' });
+  const [filter, setFilter] = useState({ location: '', brand: '', minPrice: '', maxPrice: '' });
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,9 +28,10 @@ const VehicleListing = () => {
   const filtered = vehicles.filter(v => {
     const matchBrand = !filter.brand || v.brand?.toLowerCase().includes(filter.brand.toLowerCase());
     const matchLocation = !filter.location || v.location?.toLowerCase().includes(filter.location.toLowerCase());
-    const matchPrice = !filter.maxPrice || v.pricePerDay <= parseInt(filter.maxPrice);
+    const matchMinPrice = !filter.minPrice || v.pricePerDay >= parseInt(filter.minPrice);
+    const matchMaxPrice = !filter.maxPrice || v.pricePerDay <= parseInt(filter.maxPrice);
     const matchFuel = filterFuel === 'any' || v.fuelType?.toLowerCase() === filterFuel;
-    return matchBrand && matchLocation && matchPrice && matchFuel;
+    return matchBrand && matchLocation && matchMinPrice && matchMaxPrice && matchFuel;
   });
 
   return (
@@ -41,7 +42,7 @@ const VehicleListing = () => {
           <span>Sri Lanka's modern car marketplace</span>
         </div>
         <h1 className="modern-title">Find the <span className="text-purple">nearest ride</span><br/> in seconds.</h1>
-        <p className="modern-subtitle">Search verified vehicles around you. Filter by brand, budget and fuel — book in a tap.</p>
+        <p className="modern-subtitle">Search verified vehicles around you. Filter by brand, price range and fuel — book in a tap.</p>
       </div>
 
       <div className="container">
@@ -49,7 +50,7 @@ const VehicleListing = () => {
           <div className="search-card-header">
             <h2>Search in <span className="text-purple">3 quick steps</span></h2>
             <button className="reset-btn" onClick={() => {
-               setFilter({ location: '', brand: '', maxPrice: '' });
+               setFilter({ location: '', brand: '', minPrice: '', maxPrice: '' });
                setFilterShow('nearest');
                setFilterFuel('any');
             }}>Reset</button>
@@ -58,13 +59,13 @@ const VehicleListing = () => {
           <div className="search-steps-row">
             <div className="search-step">
               <div className="step-label">
-                <span className="step-num active-num">1</span> Where?
+                <span className="step-num active-num">1</span> Location
               </div>
               <div className="step-input-box">
                 <MapPin size={18} className="icon-purple-txt" />
                 <input 
                   type="text" 
-                  placeholder="Type a city..." 
+                  placeholder="Type a location..." 
                   value={filter.location}
                   onChange={e => setFilter({...filter, location: e.target.value})}
                 />
@@ -73,7 +74,7 @@ const VehicleListing = () => {
 
             <div className="search-step">
               <div className="step-label">
-                <span className="step-num active-num">2</span> Which car?
+                <span className="step-num active-num">2</span> Brand
               </div>
               <div className="step-input-box">
                 <Car size={18} className="icon-blue-txt" />
@@ -86,18 +87,30 @@ const VehicleListing = () => {
               </div>
             </div>
 
-            <div className="search-step">
+            <div className="search-step" style={{ flex: 1.5 }}>
               <div className="step-label">
-                <span className="step-num active-num">3</span> Budget / day
+                <span className="step-num active-num">3</span> Price / day
               </div>
-              <div className="step-input-box">
-                <span className="currency-label">LKR</span>
-                <input 
-                  type="number" 
-                  placeholder="10,000" 
-                  value={filter.maxPrice}
-                  onChange={e => setFilter({...filter, maxPrice: e.target.value})}
-                />
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', width: '100%' }}>
+                <div className="step-input-box" style={{ flex: 1 }}>
+                  <span className="currency-label">LKR</span>
+                  <input 
+                    type="number" 
+                    placeholder="Min" 
+                    value={filter.minPrice}
+                    onChange={e => setFilter({...filter, minPrice: e.target.value})}
+                  />
+                </div>
+                <span style={{ color: '#9ca3af', fontWeight: 600 }}>to</span>
+                <div className="step-input-box" style={{ flex: 1 }}>
+                  <span className="currency-label">LKR</span>
+                  <input 
+                    type="number" 
+                    placeholder="Max" 
+                    value={filter.maxPrice}
+                    onChange={e => setFilter({...filter, maxPrice: e.target.value})}
+                  />
+                </div>
               </div>
             </div>
 

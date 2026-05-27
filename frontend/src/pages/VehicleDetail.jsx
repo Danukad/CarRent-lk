@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { MapPin, Star, Check, CheckCircle2, Send } from 'lucide-react';
 
 const VehicleDetail = () => {
   const { id } = useParams();
@@ -36,7 +37,10 @@ const VehicleDetail = () => {
           <div className="detail-main">
             <div className="main-image-wrap">
               <img src={vehicle.image} alt={`${vehicle.brand} ${vehicle.model}`} className="main-image" />
-              <div className="image-badge">📍 {vehicle.location}</div>
+              <div className="image-badge">
+                <MapPin size={14} style={{ marginRight: '4px', verticalAlign: 'middle', display: 'inline-block' }} />
+                <span>{vehicle.location}</span>
+              </div>
             </div>
 
             <div className="vehicle-header">
@@ -45,7 +49,10 @@ const VehicleDetail = () => {
                 <h1>{vehicle.brand} {vehicle.model}</h1>
               </div>
               <div className="vehicle-rating">
-                <span>⭐ {vehicle.rating}</span>
+                <span>
+                  <Star size={16} fill="#f59e0b" color="#f59e0b" style={{ marginRight: '6px', verticalAlign: 'middle', display: 'inline-block' }} />
+                  {vehicle.rating}
+                </span>
                 <small>{vehicle.trips} trips</small>
               </div>
             </div>
@@ -58,8 +65,11 @@ const VehicleDetail = () => {
             <div className="features-section">
               <h3>What's Included</h3>
               <div className="features-grid">
-                {['✅ Air Conditioning', '✅ Full Insurance', '✅ Music System', '✅ Free Delivery'].map(f => (
-                  <div key={f} className="feature-tag">{f}</div>
+                {['Air Conditioning', 'Full Insurance', 'Music System', 'Free Delivery'].map(f => (
+                  <div key={f} className="feature-tag">
+                    <Check size={16} className="feature-check" />
+                    <span>{f}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -83,7 +93,7 @@ const VehicleDetail = () => {
 
               {sent ? (
                 <div className="sent-msg">
-                  <span>🎉</span>
+                  <CheckCircle2 size={44} className="sent-check-icon" />
                   <h3>Offer Sent!</h3>
                   <p>The owner will contact you soon.</p>
                 </div>
@@ -109,7 +119,10 @@ const VehicleDetail = () => {
                       rows={3}
                     />
                   </div>
-                  <button className="btn-primary" type="submit">Send Offer 📩</button>
+                  <button className="btn-primary" type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <span>Send Offer</span>
+                    <Send size={16} />
+                  </button>
                 </form>
               )}
             </div>
@@ -213,6 +226,17 @@ const VehicleDetail = () => {
           font-size: 0.9rem;
           font-weight: 500;
           color: var(--text-muted);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .feature-check {
+          color: var(--accent);
+          flex-shrink: 0;
+        }
+        .sent-check-icon {
+          color: var(--accent);
+          margin-bottom: 0.5rem;
         }
         /* Bid Panel */
         .bid-panel { position: sticky; top: 88px; }

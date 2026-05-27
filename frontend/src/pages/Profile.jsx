@@ -1,56 +1,145 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { 
-  Car, Calendar, Star, Banknote, Bell, Plus, TrendingUp, Grid, Settings as SettingsIcon, PenLine, Sparkles, ChevronRight, LogOut
-} from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import {
+  Car,
+  Calendar,
+  Star,
+  Banknote,
+  Bell,
+  Plus,
+  TrendingUp,
+  Grid,
+  Settings as SettingsIcon,
+  PenLine,
+  Sparkles,
+  ChevronRight,
+  LogOut,
+  X,
+} from "lucide-react";
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  
+  const [activeTab, setActiveTab] = useState("overview");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/";
   };
 
-  const user = JSON.parse(localStorage.getItem('user') || 'null') || {
-    name: 'Saman Kumara',
-    email: 'saman@carrents.lk',
+  const user = JSON.parse(localStorage.getItem("user") || "null") || {
+    name: "Saman Kumara",
+    email: "saman@carrents.lk",
   };
-  const initial = user?.name?.[0]?.toUpperCase() || 'S';
-  const firstName = user?.name?.split(' ')[0] || 'User';
+
+  // Handle Edit Profile Button Click
+  const handleEditClick = () => {
+    setEditName(user.name);
+    setShowEditModal(true);
+  };
+
+  // Handle Save Profile
+  const handleSaveProfile = async () => {
+    if (!editName.trim()) {
+      alert("Name cannot be empty");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/update-profile",
+        {
+          userId: user.id,
+          name: editName,
+        },
+      );
+
+      // Update localStorage
+      const updatedUser = { ...user, name: res.data.user.name };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      // Close modal and refresh
+      setShowEditModal(false);
+      alert("Profile updated successfully!");
+      window.location.reload();
+    } catch (err) {
+      alert(
+        "Failed to update profile: " + (err.response?.data?.msg || err.message),
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const initial = user?.name?.[0]?.toUpperCase() || "S";
+  const firstName = user?.name?.split(" ")[0] || "User";
 
   const stats = [
-    { icon: <Car size={20} />, label: 'My Listings', value: '3', colorClass: 'icon-purple' },
-    { icon: <Calendar size={20} />, label: 'Total Rents', value: '12', colorClass: 'icon-blue' },
-    { icon: <Star size={20} />, label: 'Rating', value: '4.9', colorClass: 'icon-orange' },
-    { icon: <Banknote size={20} />, label: 'Earned', value: 'LKR 124K', colorClass: 'icon-green' },
+    {
+      icon: <Car size={20} />,
+      label: "My Listings",
+      value: "3",
+      colorClass: "icon-purple",
+    },
+    {
+      icon: <Calendar size={20} />,
+      label: "Total Rents",
+      value: "12",
+      colorClass: "icon-blue",
+    },
+    {
+      icon: <Star size={20} />,
+      label: "Rating",
+      value: "4.9",
+      colorClass: "icon-orange",
+    },
+    {
+      icon: <Banknote size={20} />,
+      label: "Earned",
+      value: "LKR 124K",
+      colorClass: "icon-green",
+    },
   ];
 
   const listings = [
-    { brand: 'Toyota', model: 'Aqua', year: 2021, price: 8500, status: 'Active' },
-    { brand: 'Honda', model: 'Vezel', year: 2020, price: 12000, status: 'Rented' },
+    {
+      brand: "Toyota",
+      model: "Aqua",
+      year: 2021,
+      price: 8500,
+      status: "Active",
+    },
+    {
+      brand: "Honda",
+      model: "Vezel",
+      year: 2020,
+      price: 12000,
+      status: "Rented",
+    },
   ];
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: <Grid size={16} /> },
-    { id: 'listings', label: 'My Cars', icon: <Car size={16} /> },
-    { id: 'bookings', label: 'Bookings', icon: <Calendar size={16} /> },
-    { id: 'settings', label: 'Settings', icon: <SettingsIcon size={16} /> },
+    { id: "overview", label: "Overview", icon: <Grid size={16} /> },
+    { id: "listings", label: "My Cars", icon: <Car size={16} /> },
+    { id: "bookings", label: "Bookings", icon: <Calendar size={16} /> },
+    { id: "settings", label: "Settings", icon: <SettingsIcon size={16} /> },
   ];
 
   return (
     <div className="profile-page">
       <div className="container">
-        
         {/* Profile Header */}
         <div className="profile-header-card">
           <div className="avatar-wrapper">
             <div className="avatar-lg">{initial}</div>
             <div className="online-indicator"></div>
           </div>
-          
+
           <div className="profile-meta">
             <div className="verified-badge">
               <Sparkles size={12} className="verified-icon" /> Verified Host
@@ -58,11 +147,11 @@ const Profile = () => {
             <h1>{user.name}</h1>
             <p>{user.email}</p>
           </div>
-          
-          <button className="edit-btn">
+
+          <button className="edit-btn" onClick={handleEditClick}>
             <PenLine size={16} /> Edit Profile
           </button>
-          
+
           <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={16} /> Logout
           </button>
@@ -72,7 +161,9 @@ const Profile = () => {
         <div className="stats-row">
           {stats.map((s, i) => (
             <div key={i} className="stat-box">
-              <div className={`stat-icon-wrapper ${s.colorClass}`}>{s.icon}</div>
+              <div className={`stat-icon-wrapper ${s.colorClass}`}>
+                {s.icon}
+              </div>
               <div className="stat-info">
                 <span className="stat-value">{s.value}</span>
                 <span className="stat-label">{s.label}</span>
@@ -84,10 +175,10 @@ const Profile = () => {
         {/* Tab Nav */}
         <div className="tab-nav-container">
           <div className="tab-nav">
-            {tabs.map(t => (
+            {tabs.map((t) => (
               <button
                 key={t.id}
-                className={`tab-btn ${activeTab === t.id ? 'active' : ''}`}
+                className={`tab-btn ${activeTab === t.id ? "active" : ""}`}
                 onClick={() => setActiveTab(t.id)}
               >
                 {t.icon} {t.label}
@@ -98,68 +189,92 @@ const Profile = () => {
 
         {/* Tab Content */}
         <div className="tab-content">
-          {activeTab === 'overview' && (
+          {activeTab === "overview" && (
             <div className="animate-in">
               <div className="overview-masonry">
-                
                 <div className="masonry-row">
                   {/* Welcome Back Block */}
                   <div className="overview-card welcome-card">
                     <Bell size={20} className="welcome-bell" />
                     <h2>Welcome back, {firstName}!</h2>
-                    <p>Your Toyota Aqua was viewed <strong>45 times</strong> this week — your best week yet.</p>
-                    <button className="view-insights-btn">View insights <ChevronRight size={16} /></button>
+                    <p>
+                      Your Toyota Aqua was viewed <strong>45 times</strong> this
+                      week — your best week yet.
+                    </p>
+                    <button className="view-insights-btn">
+                      View insights <ChevronRight size={16} />
+                    </button>
                   </div>
-                  
+
                   {/* Add New Vehicle Block */}
                   <div className="overview-card add-vehicle-card">
-                    <div className="add-icon-wrapper"><Plus size={20} className="icon-purple" /></div>
+                    <div className="add-icon-wrapper">
+                      <Plus size={20} className="icon-purple" />
+                    </div>
                     <h3>Add New Vehicle</h3>
                     <p>List another car and earn more every month.</p>
-                    <Link to="/list-my-car" className="cta-link">Get started <ChevronRight size={16} /></Link>
+                    <Link to="/list-my-car" className="cta-link">
+                      Get started <ChevronRight size={16} />
+                    </Link>
                   </div>
                 </div>
 
                 <div className="masonry-row">
                   {/* Annual Earnings Block */}
                   <div className="overview-card annual-earnings-card">
-                    <div className="icon-wrapper icon-green"><TrendingUp size={20} /></div>
+                    <div className="icon-wrapper icon-green">
+                      <TrendingUp size={20} />
+                    </div>
                     <h3>Annual Earnings</h3>
-                    <p>You earned <strong>LKR 124,000</strong> this year.</p>
+                    <p>
+                      You earned <strong>LKR 124,000</strong> this year.
+                    </p>
                     <div className="progress-bar-container">
-                      <div className="progress-bar-fill" style={{ width: '75%' }}></div>
+                      <div
+                        className="progress-bar-fill"
+                        style={{ width: "75%" }}
+                      ></div>
                     </div>
                   </div>
-                  
+
                   {/* Active Offers Block */}
                   <div className="overview-card active-offers-card">
                     <div className="offers-left">
-                      <div className="icon-wrapper icon-purple"><Star size={20} /></div>
+                      <div className="icon-wrapper icon-purple">
+                        <Star size={20} />
+                      </div>
                       <div className="offers-text">
                         <h3>Active Offers</h3>
                         <p>2 new offers waiting for your review.</p>
                       </div>
                     </div>
-                    <Link to="#" className="cta-link review-link">Review <ChevronRight size={16} /></Link>
+                    <Link to="#" className="cta-link review-link">
+                      Review <ChevronRight size={16} />
+                    </Link>
                   </div>
                 </div>
-
-               </div>
+              </div>
             </div>
           )}
 
-          {activeTab === 'listings' && (
+          {activeTab === "listings" && (
             <div className="animate-in">
               <div className="section-header">
                 <h2>My Vehicles</h2>
-                <Link to="/list-my-car" className="btn-sm">+ Add New</Link>
+                <Link to="/list-my-car" className="btn-sm">
+                  + Add New
+                </Link>
               </div>
               <div className="listings-list">
                 {listings.map((item, i) => (
                   <div key={i} className="listing-row">
-                    <div className="listing-thumb"><Car className="icon-purple" /></div>
+                    <div className="listing-thumb">
+                      <Car className="icon-purple" />
+                    </div>
                     <div className="listing-info">
-                      <h4>{item.brand} {item.model} ({item.year})</h4>
+                      <h4>
+                        {item.brand} {item.model} ({item.year})
+                      </h4>
                       <p>LKR {item.price.toLocaleString()} / day</p>
                     </div>
                     <div className={`status-pill ${item.status.toLowerCase()}`}>
@@ -171,16 +286,18 @@ const Profile = () => {
             </div>
           )}
 
-          {activeTab === 'bookings' && (
+          {activeTab === "bookings" && (
             <div className="animate-in empty-pane">
               <Calendar size={48} className="icon-blue" />
               <h3>No bookings yet</h3>
               <p>When you rent a vehicle, it will appear here.</p>
-              <Link to="/vehicles" className="btn-sm">Browse Vehicles</Link>
+              <Link to="/vehicles" className="btn-sm">
+                Browse Vehicles
+              </Link>
             </div>
           )}
 
-          {activeTab === 'settings' && (
+          {activeTab === "settings" && (
             <div className="animate-in settings-pane">
               <h2>Account Settings</h2>
               <div className="settings-form">
@@ -203,7 +320,213 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* Edit Name Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Your Name</h2>
+              <button
+                className="modal-close-btn"
+                onClick={() => setShowEditModal(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                className="btn-cancel"
+                onClick={() => setShowEditModal(false)}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-save"
+                onClick={handleSaveProfile}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
+        /* Modal Styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .modal-content {
+          background: white;
+          border-radius: 1rem;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          max-width: 500px;
+          width: 90%;
+          animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+          from {
+            transform: translateY(20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        .modal-header {
+          padding: 1.5rem;
+          border-bottom: 1px solid #e5e7eb;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .modal-header h2 {
+          margin: 0;
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #1f2937;
+        }
+
+        .modal-close-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #6b7280;
+          padding: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.5rem;
+          transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover {
+          background: #f3f4f6;
+          color: #1f2937;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: #1f2937;
+          font-size: 0.95rem;
+        }
+
+        .input-field {
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e5e7eb;
+          border-radius: 0.5rem;
+          font-size: 1rem;
+          font-family: inherit;
+          transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+          outline: none;
+          border-color: #a855f7;
+          box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .modal-footer {
+          padding: 1.5rem;
+          border-top: 1px solid #e5e7eb;
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+        }
+
+        .btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background: #f3f4f6;
+          color: #1f2937;
+          border: none;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+          background: #e5e7eb;
+        }
+
+        .btn-cancel:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .btn-save {
+          padding: 0.75rem 1.5rem;
+          background: linear-gradient(135deg, #a855f7, #9333ea);
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .btn-save:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-save:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+        
         .profile-page {
           padding: 2.5rem 0 6rem;
           /* Inherits the global premium background from parent */

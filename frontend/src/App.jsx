@@ -1,15 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
-import Splash from './pages/Splash';
-import VehicleListing from './pages/VehicleListing';
-import VehicleDetail from './pages/VehicleDetail';
-import ListVehicle from './pages/ListVehicle';
-import Navbar from './components/Navbar';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
-import WhyUs from './pages/WhyUs';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import Splash from "./pages/Splash";
+import VehicleListing from "./pages/VehicleListing";
+import VehicleDetail from "./pages/VehicleDetail";
+import ListVehicle from "./pages/ListVehicle";
+import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import SelectRole from "./pages/SelectRole";
+import Profile from "./pages/Profile";
+import WhyUs from "./pages/WhyUs";
+import Companies from "./pages/Companies";
+import CompanyDetail from "./pages/CompanyDetail";
+import CompanyDashboard from "./pages/CompanyDashboard";
 
 function AppContent() {
   return (
@@ -20,7 +29,7 @@ function AppContent() {
         <div className="blob blob-2"></div>
         <div className="blob blob-3"></div>
       </div>
-      
+
       <Navbar />
 
       <style>{`
@@ -94,10 +103,14 @@ function AppContent() {
           <Route path="/vehicle/:id" element={<VehicleDetail />} />
           <Route path="/list-my-car" element={<ListVehicle />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/select-role" element={<SelectRole />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/why-us" element={<WhyUs />} />
           <Route path="/splash" element={<Splash />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies/:id" element={<CompanyDetail />} />
+          <Route path="/company-dashboard" element={<CompanyDashboard />} />
         </Routes>
       </main>
     </div>

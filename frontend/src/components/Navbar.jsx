@@ -29,7 +29,12 @@ const Navbar = () => {
         {/* Nav Links - Centered */}
         <div className="nav-links">
           <Link to="/vehicles" className="nav-item">Rent</Link>
-          <Link to="/list-my-car" className="nav-item">List Vehicle</Link>
+          {user && user.role === 'company' ? (
+            <Link to="/company-dashboard" className="nav-item">Dashboard</Link>
+          ) : (
+            <Link to="/list-my-car" className="nav-item">List Vehicle</Link>
+          )}
+          <Link to="/companies" className="nav-item">Companies</Link>
           <a href="#how-it-works" className="nav-item">How it works</a>
           <Link to="/why-us" className="nav-item">Why us</Link>
         </div>
@@ -41,7 +46,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="nav-item sign-in">Sign in</Link>
-              <Link to="/register" className="btn-getstarted">Get started</Link>
+              <Link to="/select-role" className="btn-getstarted">Get started</Link>
             </>
           )}
         </div>

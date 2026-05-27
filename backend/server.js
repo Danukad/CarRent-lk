@@ -15,7 +15,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/vehicles', require('./routes/vehicles'));
 app.use('/api/bids', require('./routes/bids'));
-app.use('/api/upload', require('./routes/upload')); // We added the upload route here
+app.use('/api/companies', require('./routes/companies'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Serve the uploads folder statically so frontend can access images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

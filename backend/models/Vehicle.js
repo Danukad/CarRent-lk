@@ -11,6 +11,7 @@ const VehicleSchema = new mongoose.Schema({
     description: { type: String },
     location: { type: String, required: true },
     images: [{ type: String }], // URLs to images
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', default: null }, // set when a company lists this vehicle
     availableFrom: { type: Date, required: true },
     availableTo: { type: Date, required: true },
     createdAt: { type: Date, default: Date.now },

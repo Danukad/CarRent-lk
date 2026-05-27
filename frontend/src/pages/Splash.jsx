@@ -54,7 +54,7 @@ const Splash = () => {
             <button className="splash-login-btn" style={{ borderColor: 'var(--primary)' }} onClick={() => navigate('/profile')}>
               <span>Profile</span>
             </button>
-            <button className="splash-register-btn" onClick={() => navigate('/register')}>
+            <button className="splash-register-btn" onClick={() => navigate('/select-role')}>
               <span>Sign Up</span>
             </button>
           </div>

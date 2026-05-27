@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Hero from '../components/Hero';
 import VehicleCard from '../components/VehicleCard';
+import { ShieldCheck, HeartHandshake, Clock } from 'lucide-react';
 
 const LandingPage = () => {
   const [featuredCars, setFeaturedCars] = useState([]);
@@ -88,21 +89,27 @@ const LandingPage = () => {
             <h2 className="section-title text-left">The most trusted car <br/>sharing marketplace</h2>
             <ul className="benefits-list">
               <li>
-                <div className="benefit-icon">🛡️</div>
+                <div className="benefit-icon">
+                  <ShieldCheck size={24} />
+                </div>
                 <div>
                   <h4>Fully Insured</h4>
                   <p>Every trip is covered by our comprehensive insurance policy.</p>
                 </div>
               </li>
               <li>
-                <div className="benefit-icon">🤝</div>
+                <div className="benefit-icon">
+                  <HeartHandshake size={24} />
+                </div>
                 <div>
                   <h4>Verified Hosts</h4>
                   <p>We verify every host and vehicle to ensure your safety.</p>
                 </div>
               </li>
               <li>
-                <div className="benefit-icon">🕙</div>
+                <div className="benefit-icon">
+                  <Clock size={24} />
+                </div>
                 <div>
                   <h4>24/7 Support</h4>
                   <p>Our dedicated support team is always here to help you.</p>
@@ -252,14 +259,7 @@ const LandingPage = () => {
           margin-top: 3rem;
         }
 
-        .benefits-list li {
-          display: flex;
-          gap: 1.5rem;
-          margin-bottom: 2rem;
-        }
-
         .benefit-icon {
-          font-size: 1.5rem;
           width: 48px;
           height: 48px;
           background: #F5F3FF;
@@ -268,6 +268,32 @@ const LandingPage = () => {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 1px solid #E5E7EB;
+        }
+
+        .benefit-icon svg {
+          color: #8B5CF6;
+          transition: transform 0.3s ease;
+        }
+
+        .benefits-list li {
+          display: flex;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+          cursor: pointer;
+        }
+
+        .benefits-list li:hover .benefit-icon {
+          transform: scale(1.1) rotate(8deg);
+          background: #EDE9FE;
+          border-color: #8B5CF6;
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+        }
+
+        .benefits-list li:hover .benefit-icon svg {
+          transform: scale(1.1);
+          color: #7C3AED;
         }
 
         .benefits-list h4 {

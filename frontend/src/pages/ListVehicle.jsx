@@ -61,7 +61,7 @@ const ListVehicle = () => {
       alert("Vehicle listed successfully!");
       setStep(1);
     } catch (err) {
-      alert("Error saving vehicle.");
+      alert("Error: " + (err.response?.data?.msg || err.message));
     }
   };
 

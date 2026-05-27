@@ -1,25 +1,67 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/home');
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        formData,
+      );
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      navigate("/home");
       window.location.reload();
     } catch (err) {
-      alert(err.response?.data?.msg || 'Login failed. Please check your email and password.');
+      alert(
+        err.response?.data?.msg ||
+          "Login failed. Please check your email and password.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      console.log("Starting Firebase Google Auth Popup...");
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Firebase authenticated user:", user);
+
+      // Send to backend
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/firebase-login",
+        {
+          name: user.displayName,
+          email: user.email,
+          firebaseId: user.uid,
+        },
+      );
+
+      console.log("Backend response:", res.data);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      navigate("/home");
+      window.location.reload();
+    } catch (err) {
+      console.error("Google login error:", err);
+      if (err.code !== "auth/popup-closed-by-user") {
+        alert("Google login failed: " + err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -32,12 +74,23 @@ const Login = () => {
         <div className="auth-header">
           <Link to="/" className="brand-logo">
             <div className="logo-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
             </div>
-            <span className="logo-text">CarRents<span>.lk</span></span>
+            <span className="logo-text">
+              CarRents<span>.lk</span>
+            </span>
           </Link>
 
           <div className="hero-badge-mini">
@@ -67,7 +120,9 @@ const Login = () => {
           <div className="input-group">
             <div className="label-flex">
               <label>PASSWORD</label>
-              <Link to="/forgot-password" id="forgot-link">Forgot?</Link>
+              <Link to="/forgot-password" id="forgot-link">
+                Forgot?
+              </Link>
             </div>
             <div className="input-wrapper">
               <input
@@ -82,13 +137,49 @@ const Login = () => {
           </div>
 
           <button className="btn-login" type="submit" disabled={loading}>
-            {loading ? 'Authenticating...' : 'Sign In'}
+            {loading ? "Authenticating..." : "Sign In"}
             {!loading && <span className="arrow">→</span>}
           </button>
         </form>
 
+        <div style={{ margin: "20px 0", textAlign: "center" }}>
+          <p style={{ color: "#9CA3AF", fontSize: "14px" }}>OR</p>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="btn-google-auth"
+              disabled={loading}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18">
+                <path
+                  fill="#4285F4"
+                  d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91c1.7-1.56 2.69-3.86 2.69-6.6z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.95v2.3A9 9 0 0 0 9 18z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M3.96 10.69A5.4 5.4 0 0 1 3.6 9c0-.59.1-1.17.29-1.69V5.01H.95A8.99 8.99 0 0 0 0 9c0 1.45.35 2.82.95 4.02l3.01-2.33z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.22A8.99 8.99 0 0 0 9 0 9 9 0 0 0 .95 5.01l3.01 2.33C4.67 5.16 6.66 3.58 9 3.58z"
+                />
+              </svg>
+              <span style={{ marginLeft: "10px" }}>Continue with Google</span>
+            </button>
+          </div>
+        </div>
+
         <div className="auth-footer">
-          <p>New to CarRents.lk? <Link to="/register">Create an account</Link></p>
+          <p>
+            New to CarRents.lk? <Link to="/select-role">Create an account</Link>
+          </p>
         </div>
       </div>
 
@@ -111,6 +202,37 @@ const Login = () => {
           padding: 3rem;
           box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
           border: 1px solid #F1F5F9;
+        }
+
+        .btn-google-auth {
+          width: 100%;
+          background: #FFFFFF;
+          border: 1.5px solid #E5E7EB;
+          color: #374151;
+          padding: 12px;
+          border-radius: 100px;
+          font-weight: 700;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+          margin-bottom: 0.5rem;
+        }
+
+        .btn-google-auth:hover:not(:disabled) {
+          background: #F9FAFB;
+          border-color: #DDD6FE;
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
+          transform: translateY(-1px);
+        }
+
+        .btn-google-auth:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         /* Logo and Header Styling */

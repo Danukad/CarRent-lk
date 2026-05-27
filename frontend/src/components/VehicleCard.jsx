@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, MapPin, Users, Fuel, Settings2, Star, Car as CarIcon } from 'lucide-react';
+import { Sparkles, MapPin, Users, Fuel, Settings2, Star, Building2 } from 'lucide-react';
 
 const VehicleCard = ({ vehicle, index }) => {
   // Gradients matching the beautiful colors in screenshot 2
@@ -36,6 +36,11 @@ const VehicleCard = ({ vehicle, index }) => {
           <div className="v-rating"><Star size={14} fill="#f59e0b" color="#f59e0b"/> 4.95</div>
         </div>
         <p className="v-location">{vehicle.location}</p>
+        {vehicle.company && (
+          <Link to={`/companies/${vehicle.company._id}`} className="v-company-badge">
+            <Building2 size={12}/> {vehicle.company.companyName}
+          </Link>
+        )}
         
         <div className="v-features">
           <span><Users size={14}/> {vehicle.seats || 5}</span>
@@ -202,6 +207,22 @@ const VehicleCard = ({ vehicle, index }) => {
           background: #9333ea;
           transform: translateX(2px);
         }
+
+        .v-company-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          background: #EDE9FE;
+          color: #6D28D9;
+          font-size: 0.72rem;
+          font-weight: 700;
+          padding: 3px 10px;
+          border-radius: 100px;
+          text-decoration: none;
+          margin-bottom: 0.75rem;
+          transition: background 0.2s;
+        }
+        .v-company-badge:hover { background: #DDD6FE; }
       `}</style>
     </div>
   );
