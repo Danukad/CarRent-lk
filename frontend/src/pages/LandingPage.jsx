@@ -176,7 +176,15 @@ const LandingPage = () => {
     const fetchCars = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/vehicles`);
-        setFeaturedCars(response.data.slice(0, 4));
+        const allCars = Array.isArray(response.data) ? response.data : [];
+        // Prioritize isFeatured: true first, then newest first
+        const sorted = [...allCars].sort((a, b) => {
+          if (a.isFeatured && !b.isFeatured) return -1;
+          if (!a.isFeatured && b.isFeatured) return 1;
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        });
+        // Display top 8 vehicles on Home Page
+        setFeaturedCars(sorted.slice(0, 8));
       } catch (error) {
         console.error("Error fetching cars:", error);
       } finally {
