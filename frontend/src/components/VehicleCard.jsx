@@ -12,11 +12,7 @@ import {
 import { formatVehicleImageUrl, handleImageError } from "../utils/imageHelper";
 
 const VehicleCard = ({ vehicle, index = 0 }) => {
-  const rawImage =
-    vehicle.images && vehicle.images.length > 0 && vehicle.images[0]
-      ? vehicle.images[0]
-      : null;
-  const coverImage = formatVehicleImageUrl(rawImage);
+  const coverImage = formatVehicleImageUrl(vehicle?.images);
 
   const year = vehicle.year || "2024";
   const originalPrice = Math.round((vehicle.pricePerDay || 0) * 1.12).toLocaleString();

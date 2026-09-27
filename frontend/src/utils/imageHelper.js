@@ -10,7 +10,12 @@ export const DEFAULT_CAR_IMAGE =
  * - If a relative path (/uploads/...), prepends API_URL.
  * - If invalid/empty, returns a high-res default car placeholder.
  */
-export const formatVehicleImageUrl = (imgUrl) => {
+export const formatVehicleImageUrl = (imgInput) => {
+  let imgUrl = imgInput;
+  if (Array.isArray(imgInput)) {
+    imgUrl = imgInput.find((img) => typeof img === "string" && img.trim() !== "") || null;
+  }
+
   if (!imgUrl || typeof imgUrl !== "string" || imgUrl.trim() === "") {
     return DEFAULT_CAR_IMAGE;
   }
