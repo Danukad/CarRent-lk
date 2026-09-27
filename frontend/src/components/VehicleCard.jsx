@@ -12,7 +12,7 @@ import {
 import { formatVehicleImageUrl, handleImageError } from "../utils/imageHelper";
 
 const VehicleCard = ({ vehicle, index = 0 }) => {
-  const coverImage = formatVehicleImageUrl(vehicle?.images);
+  const coverImage = formatVehicleImageUrl(vehicle?.images, vehicle?.vehicleType);
 
   const year = vehicle.year || "2024";
   const originalPrice = Math.round((vehicle.pricePerDay || 0) * 1.12).toLocaleString();
@@ -30,7 +30,7 @@ const VehicleCard = ({ vehicle, index = 0 }) => {
         <img
           src={coverImage}
           alt={`${vehicle.brand} ${vehicle.model}`}
-          onError={handleImageError}
+          onError={(e) => handleImageError(e, coverImage)}
         />
         <div className="v-card-badges">
           <span className="v-year-badge">{year}</span>

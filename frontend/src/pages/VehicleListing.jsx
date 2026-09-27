@@ -1167,10 +1167,10 @@ const VehicleListing = () => {
                             {curV.images && curV.images[0] && (
                               <div className="map-info-img-wrap">
                                 <img
-                                  src={formatVehicleImageUrl(curV.images[0])}
+                                  src={formatVehicleImageUrl(curV.images, curV.vehicleType)}
                                   alt={`${curV.brand} ${curV.model}`}
                                   className="map-info-img"
-                                  onError={handleImageError}
+                                  onError={(e) => handleImageError(e, formatVehicleImageUrl(null, curV.vehicleType))}
                                 />
                                 {hasMultiple && (
                                   <span className="map-info-img-badge">
@@ -1291,11 +1291,11 @@ const VehicleListing = () => {
                         onClick={() => handleSidebarVehicleClick(v)}
                       >
                         <div className="map-sidebar-img-wrap">
-                          {v.images && v.images[0] ? (
+                          {v.images && v.images.length > 0 ? (
                             <img
-                              src={formatVehicleImageUrl(v.images[0])}
+                              src={formatVehicleImageUrl(v.images, v.vehicleType)}
                               alt={v.brand}
-                              onError={handleImageError}
+                              onError={(e) => handleImageError(e, formatVehicleImageUrl(null, v.vehicleType))}
                             />
                           ) : (
                             <div className="map-sidebar-placeholder">

@@ -144,8 +144,8 @@ const VehicleDetail = () => {
     : [];
 
   const images = rawImages.length > 0
-    ? rawImages.map(formatVehicleImageUrl)
-    : [formatVehicleImageUrl(null)];
+    ? rawImages.map(img => formatVehicleImageUrl(img, vehicle.vehicleType))
+    : [formatVehicleImageUrl(null, vehicle.vehicleType)];
 
   const currentImage = images[activeImageIndex] || images[0];
 

@@ -490,12 +490,12 @@ export default function CompanyDashboard() {
                           <tr key={v._id}>
                             <td>
                               <div className="cd-cell-vehicle">
-                                {v.images && v.images[0] ? (
+                                {v.images && v.images.length > 0 ? (
                                   <img
-                                    src={formatVehicleImageUrl(v.images[0])}
+                                    src={formatVehicleImageUrl(v.images, v.vehicleType)}
                                     alt={v.brand}
                                     className="cd-vehicle-thumb"
-                                    onError={handleImageError}
+                                    onError={(e) => handleImageError(e, formatVehicleImageUrl(null, v.vehicleType))}
                                   />
                                 ) : (
                                   <div className="cd-vehicle-thumb-placeholder"><Car size={14} /></div>

@@ -559,10 +559,11 @@ const ReviewsPortal = () => {
                   >
                     <img
                       src={formatVehicleImageUrl(
-                        rev.vehicle.images?.[0] || "/assets/images/car.jpg"
+                        rev.vehicle.images,
+                        rev.vehicle.vehicleType
                       )}
                       alt={`${rev.vehicle.brand} ${rev.vehicle.model}`}
-                      onError={handleImageError}
+                      onError={(e) => handleImageError(e, formatVehicleImageUrl(null, rev.vehicle.vehicleType))}
                       className="pill-car-thumb"
                     />
                     <div className="pill-car-info">

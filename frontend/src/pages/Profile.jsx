@@ -543,10 +543,10 @@ const Profile = () => {
                       <div className="listing-card-media">
                         {item.images && item.images.length > 0 ? (
                           <img
-                            src={formatVehicleImageUrl(item.images[0])}
+                            src={formatVehicleImageUrl(item.images, item.vehicleType)}
                             alt={`${item.brand} ${item.model}`}
                             className="listing-img"
-                            onError={handleImageError}
+                            onError={(e) => handleImageError(e, formatVehicleImageUrl(null, item.vehicleType))}
                           />
                         ) : (
                           <div className="listing-placeholder">

@@ -1996,10 +1996,10 @@ const AdminDashboard = () => {
                             <td>
                               <div className="vehicle-cell">
                                 <img
-                                  src={formatVehicleImageUrl(v.images?.[0])}
+                                  src={formatVehicleImageUrl(v.images, v.vehicleType)}
                                   alt={v.model}
                                   className="v-cell-thumb"
-                                  onError={handleImageError}
+                                  onError={(e) => handleImageError(e, formatVehicleImageUrl(null, v.vehicleType))}
                                 />
                                 <div>
                                   <div className="font-semibold">
